@@ -1,0 +1,78 @@
+<template id="wc-toggle-template">
+    <style>
+        :host {
+            display: inline-flex;
+            padding: 2rem
+        }
+
+        .input-checkbox {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .input-checkbox+.button-label {
+            position: relative;
+            margin: 0 10px;
+            vertical-align: middle;
+            display: inline-block;
+            height: 2em;
+            width: 4em;
+            background-color: var(--wc-toggle-unchecked-bar-color, #53D76A);
+            border-radius: 2em;
+            border: 1px solid #CCC;
+            cursor: pointer;
+            transition: background-color 0.2s ease-out;
+        }
+
+        .input-checkbox+.button-label:after {
+            content: '';
+            background-color: var(--wc-toggle-unchecked-button-color, #FFF);
+            position: absolute;
+            display: block;
+            height: 100%;
+            width: 50%;
+            border-radius: 2em;
+            border: 1px solid #999;
+            box-shadow: 0 1px 1px 0px #999;
+            top: -1px;
+            left: -1px;
+            transition: left 0.2s ease-out;
+        }
+
+        .input-checkbox:checked+.button-label {
+            background-color: var(--wc-toggle-checked-bar-color, #53D76A);
+        }
+
+        .input-checkbox:checked+.button-label:after {
+            left: calc(50% - 1px);
+            background-color: var(--wc-toggle-checked-button-color, #FFF);
+        }
+    </style>
+
+    <div class="toggle-element">
+        <slot name="left"></slot>
+        <input class="input-checkbox" type="checkbox" id="wc-toggle-checkbox"></input>
+        <label class="button-label" for="wc-toggle-checkbox"></label>
+        <slot name=right></slot>
+    </div>
+</template>
+<script>
+    const doc = (document._currentScript || document.currentScript).ownerDocument;
+    class WCToggle extends HTMLElement {
+        constructor() {
+            super();
+
+            this.createTemplate();
+        }
+
+        createTemplate() {
+            const template = doc.querySelector('#wc-toggle-template');
+            this.attachShadow({
+                mode: 'open'
+            });
+            this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+    }
+
+    customElements.define('wc-toggle', WCToggle);
+</script>
