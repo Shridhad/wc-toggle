@@ -1,0 +1,22 @@
+{
+  "name": "wc-toggle",
+  "description": "A toggle web component to toggle between two values",
+  "main": "wc-toggle.html",
+  "authors": [
+    "Shridhar Deshmukh"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "wc-toggle",
+    "paper-toggle",
+    "toggle"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

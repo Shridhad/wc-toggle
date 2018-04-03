@@ -1,0 +1,16 @@
+{
+  "name": "wc-toggle",
+  "version": "0.1.0",
+  "description": "A toggle web component to toggle between two values",
+  "main": "wc-toggle.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wc-toggle",
+    "paper-toggle",
+    "toggle"
+  ],
+  "author": "Shridhar Deshmukh",
+  "license": "ISC"
+}
