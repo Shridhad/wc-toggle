@@ -7,9 +7,20 @@
     </head>
 
     <body>
-        <wc-toggle>
-            <label for="" slot="left">USD</label>
-            <label for="" slot="right">EUR</label>
+        <wc-toggle value-left="INR" value-right="GBP" value="INR">
         </wc-toggle>
+
+        <div>
+            <p> selected Value: <span class="value"></span></p>
+        </div>
+
+        <script>
+            const toggle = document.querySelector("wc-toggle");
+            const value = document.querySelector(".value");
+            
+            toggle.addEventListener("change", ({detail}) => {
+                value.innerHTML = detail.value;
+            })
+        </script>  
     </body>
 </html>

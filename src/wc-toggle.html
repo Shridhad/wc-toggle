@@ -10,7 +10,12 @@
             left: -9999px;
         }
 
-        .input-checkbox+.button-label {
+        .label-left,
+        .label-right {
+            cursor: pointer;
+        }
+
+        .input-checkbox + .button-label {
             position: relative;
             margin: 0 10px;
             vertical-align: middle;
@@ -50,27 +55,85 @@
     </style>
 
     <div class="toggle-element">
-        <slot name="left"></slot>
+        <label class="label-left" for="wc-toggle-checkbox">
+            <slot name="left"></slot>
+        </label>
         <input class="input-checkbox" type="checkbox" id="wc-toggle-checkbox"></input>
         <label class="button-label" for="wc-toggle-checkbox"></label>
-        <slot name=right></slot>
+        <label class="label-right" for="wc-toggle-checkbox">
+            <slot name="right"></slot>
+        </label>
     </div>
 </template>
 <script>
     const doc = (document._currentScript || document.currentScript).ownerDocument;
     class WCToggle extends HTMLElement {
+        static get observedAttributes() {
+            return ['value'];
+        }
         constructor() {
             super();
 
             this.createTemplate();
+            this._checked = false;
         }
 
         createTemplate() {
             const template = doc.querySelector('#wc-toggle-template');
-            this.attachShadow({
-                mode: 'open'
-            });
+            this.attachShadow({mode: 'open'});
             this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+
+        connectedCallback() {
+            this.$_checkbox = this.shadowRoot.querySelector("#wc-toggle-checkbox");
+            this.readValues();
+            this.setLabels();
+
+            this.$_checkbox.addEventListener("click", this._toggleValue.bind(this));
+        }
+
+        disconnectedCallback() {
+            this.$_checkbox.removeEventListener("click", this._toggleValue.bind(this));
+        }
+
+        readValues() {
+            this._valueLeft = this.getAttribute("value-left");
+            this._valueRight = this.getAttribute("value-right");
+            
+            if (this.hasAttribute("value")) {
+                this.value = this.getAttribute("value");
+                this._checked = this.value === this._valueRight;
+                this.$_checkbox.checked = this._checked;
+            }
+        }
+
+        setLabels() {
+            const left = this.shadowRoot.querySelector("slot[name=left]");
+            const right = this.shadowRoot.querySelector("slot[name=right]");
+
+            left.innerHTML = this._valueLeft;
+            right.innerHTML = this._valueRight;
+        }
+
+        set value(newValue) {
+           this.setAttribute("value", newValue);
+        }
+
+        get value() {
+            return this.getAttribute("value");
+        }
+
+        _toggleValue(event) {
+            this._checked = this.$_checkbox.checked;
+            if (this._checked) {
+                this.value = this._valueRight;
+            } else {
+                this.value = this._valueLeft;
+            }
+            this.dispatchEvent(new CustomEvent("change", {
+                detail: {value: this.value},
+                bubbles: true    
+            }));
         }
     }
 
