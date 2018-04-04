@@ -86,8 +86,8 @@
 
         connectedCallback() {
             this.$_checkbox = this.shadowRoot.querySelector("#wc-toggle-checkbox");
-            this.readValues();
-            this.setLabels();
+            this._readValues();
+            this._setLabels();
 
             this.$_checkbox.addEventListener("click", this._toggleValue.bind(this));
         }
@@ -96,18 +96,22 @@
             this.$_checkbox.removeEventListener("click", this._toggleValue.bind(this));
         }
 
-        readValues() {
+        _readValues() {
             this._valueLeft = this.getAttribute("value-left");
             this._valueRight = this.getAttribute("value-right");
             
             if (this.hasAttribute("value")) {
                 this.value = this.getAttribute("value");
-                this._checked = this.value === this._valueRight;
-                this.$_checkbox.checked = this._checked;
+                this._updateCheckbox(this.value);
             }
         }
 
-        setLabels() {
+        _updateCheckbox(value) {
+            this._checked = value === this._valueRight;
+            this.$_checkbox.checked = this._checked;
+        }
+
+        _setLabels() {
             const left = this.shadowRoot.querySelector("slot[name=left]");
             const right = this.shadowRoot.querySelector("slot[name=right]");
 
@@ -121,6 +125,17 @@
 
         get value() {
             return this.getAttribute("value");
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+            if(name === "value" && this._isValidValue(newValue) && oldValue !== newValue) {
+                this.value = newValue;
+                this._updateCheckbox(this.value);
+            }
+        }
+
+        _isValidValue(newValue) {
+            return this._valueLeft === newValue || this._valueRight === newValue;
         }
 
         _toggleValue(event) {

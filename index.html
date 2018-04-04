@@ -7,7 +7,7 @@
     </head>
 
     <body>
-        <wc-toggle value-left="INR" value-right="GBP" value="INR">
+        <wc-toggle value-left="INR" value-right="GBP" value="GBP">
         </wc-toggle>
 
         <div>
@@ -17,6 +17,9 @@
         <script>
             const toggle = document.querySelector("wc-toggle");
             const value = document.querySelector(".value");
+            setTimeout(() => {
+                toggle.value = "INR";     
+            }, 500);
             
             toggle.addEventListener("change", ({detail}) => {
                 value.innerHTML = detail.value;
