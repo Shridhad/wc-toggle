@@ -1,6 +1,6 @@
 {
   "name": "wc-toggle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A toggle web component to toggle between two values",
   "main": "wc-toggle.html",
   "authors": [
@@ -20,6 +20,6 @@
     "tests"
   ],
   "dependencies": {
-    "webcomponentsjs": "^1.1.1"
+    "webcomponentsjs": "*"
   }
 }
