@@ -7,12 +7,13 @@
     </head>
 
     <body>
-        <wc-toggle value-left="INR" value-right="GBP" value="GBP">
+        <wc-toggle value-left="INR" value-right="GBP" value="GBP" readonly>
         </wc-toggle>
 
         <div>
             <p> selected Value: <span class="value"></span></p>
             <button class="button">Enable/Disable</button>
+            <button class="button2">Change Value</button>
         </div>
 
         <script>
@@ -30,11 +31,17 @@
             button.addEventListener("click", () => {
                 if (toggle.hasAttribute("disabled")) {
                     toggle.removeAttribute("disabled");
+                    toggle.removeAttribute("readonly");
                 } else {
                     toggle.setAttribute("disabled", "");
                 }
-            })
+            });
 
+            const button2 = document.querySelector(".button2");
+            button2.addEventListener("click", () => {
+                let value = toggle.value === "INR" ? "GBP" : "INR";
+                toggle.value = value;
+            });
         </script>  
     </body>
 </html>

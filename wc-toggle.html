@@ -5,6 +5,10 @@
             padding: var(--wc-toggle-padding, 1rem);
         }
 
+        :host([readonly]) {
+            pointer-events: none;
+        }
+
         .input-checkbox {
             position: absolute;
             left: -9999px;
@@ -21,6 +25,8 @@
             text-shadow: 0 0 0 currentColor, 0 0 0 currentColor;
         }
 
+        :host([readonly]) .label-left,
+        :host([readonly]) .label-right,
         :host([disabled]) .label-left,
         :host([disabled]) .label-right {
             opacity: 0.5;
@@ -41,6 +47,7 @@
             transition: background-color var(--wc-toggle-transition-time, 0.2s) ease-out;
         }
 
+        :host([readonly]) .input-checkbox + .button-label,
         :host([disabled]) .input-checkbox + .button-label {
             background-color: var(--wc-toggle-disabled-bar-color, #DDD);
         }
@@ -64,6 +71,7 @@
             background-color: var(--wc-toggle-checked-bar-color, #53D76A);
         }
 
+        :host([readonly]) .input-checkbox:checked + .button-label,
         :host([disabled]) .input-checkbox:checked + .button-label {
             background-color: var(--wc-toggle-disabled-bar-color, #DDD);
         }
@@ -89,7 +97,7 @@
     const doc = (document._currentScript || document.currentScript).ownerDocument;
     class WCToggle extends HTMLElement {
         static get observedAttributes() {
-            return ['value', 'disabled'];
+            return ['value', 'disabled', 'readonly'];
         }
         constructor() {
             super();
@@ -123,6 +131,7 @@
             this._valueRight = this.getAttribute("value-right");
             
             this.disabled = this.hasAttribute("disabled");
+            this.readonly = this.hasAttribute("readonly");
             if (this.hasAttribute("value")) {
                 this.value = this.getAttribute("value");
                 this._updateCheckbox(this.value);
@@ -166,6 +175,20 @@
         get disabled() {
             return this.hasAttribute("disabled");
         }
+        
+        set readonly(isReadonly) {
+            if (isReadonly) {
+                this.setAttribute("readonly", "");
+                this.$_checkbox.setAttribute("readonly", "");
+            } else {
+                this.removeAttribute("readonly");
+                this.$_checkbox.removeAttribute("readonly");
+            }
+        }
+
+        get readonly() {
+            return this.hasAttribute("readonly");
+        }
 
         attributeChangedCallback(name, oldValue, newValue) {
             if(name === "value" && this._isValidValue(newValue) && oldValue !== newValue) {
@@ -174,8 +197,12 @@
             }
  
             if (name === "disabled" && oldValue !== newValue) {
-                this.disabled = !!this.hasAttribute("disabled");
-            } 
+                this.disabled = this.hasAttribute("disabled");
+            }
+
+            if (name === "readonly" && oldValue !== newValue) {
+                this.readonly = this.hasAttribute("readonly");
+            }
         }
 
         _isValidValue(newValue) {
@@ -183,7 +210,7 @@
         }
 
         _toggleValue(event) {
-            if (this.disabled) {
+            if (this.disabled || this.readonly) {
                 return;
             }
             this._checked = this.$_checkbox.checked;
