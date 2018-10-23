@@ -12,6 +12,7 @@
 
         <div>
             <p> selected Value: <span class="value"></span></p>
+            <button class="button">Enable/Disable</button>
         </div>
 
         <script>
@@ -24,6 +25,16 @@
             toggle.addEventListener("change", ({detail}) => {
                 value.innerHTML = detail.value;
             })
+
+            const button = document.querySelector(".button");
+            button.addEventListener("click", () => {
+                if (toggle.hasAttribute("disabled")) {
+                    toggle.removeAttribute("disabled");
+                } else {
+                    toggle.setAttribute("disabled", "");
+                }
+            })
+
         </script>  
     </body>
 </html>

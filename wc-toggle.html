@@ -21,6 +21,12 @@
             text-shadow: 0 0 0 currentColor, 0 0 0 currentColor;
         }
 
+        :host([disabled]) .label-left,
+        :host([disabled]) .label-right {
+            opacity: 0.5;
+            text-shadow: none;
+        }
+
         .input-checkbox + .button-label {
             position: relative;
             margin: 0 10px;
@@ -33,6 +39,10 @@
             border: var(--wc-toggle-bar-border, 1px solid #CCC);
             cursor: pointer;
             transition: background-color var(--wc-toggle-transition-time, 0.2s) ease-out;
+        }
+
+        :host([disabled]) .input-checkbox + .button-label {
+            background-color: var(--wc-toggle-disabled-bar-color, #DDD);
         }
 
         .input-checkbox+.button-label:after {
@@ -52,6 +62,10 @@
 
         .input-checkbox:checked+.button-label {
             background-color: var(--wc-toggle-checked-bar-color, #53D76A);
+        }
+
+        :host([disabled]) .input-checkbox:checked + .button-label {
+            background-color: var(--wc-toggle-disabled-bar-color, #DDD);
         }
 
         .input-checkbox:checked+.button-label:after {
@@ -75,7 +89,7 @@
     const doc = (document._currentScript || document.currentScript).ownerDocument;
     class WCToggle extends HTMLElement {
         static get observedAttributes() {
-            return ['value'];
+            return ['value', 'disabled'];
         }
         constructor() {
             super();
@@ -108,6 +122,7 @@
             this._valueLeft = this.getAttribute("value-left");
             this._valueRight = this.getAttribute("value-right");
             
+            this.disabled = this.hasAttribute("disabled");
             if (this.hasAttribute("value")) {
                 this.value = this.getAttribute("value");
                 this._updateCheckbox(this.value);
@@ -115,8 +130,10 @@
         }
 
         _updateCheckbox(value) {
-            this._checked = value === this._valueRight;
-            this.$_checkbox.checked = this._checked;
+            if (!this.disabled) {
+                this._checked = value === this._valueRight;
+                this.$_checkbox.checked = this._checked;
+            }
         }
 
         _setLabels() {
@@ -136,11 +153,29 @@
             return this.getAttribute("value");
         }
 
+        set disabled(isDisabled) {
+            if (isDisabled) {
+                this.setAttribute("disabled", "");
+                this.$_checkbox.setAttribute("disabled", "");
+            } else {
+                this.removeAttribute("disabled");
+                this.$_checkbox.removeAttribute("disabled");
+            }
+        }
+
+        get disabled() {
+            return this.hasAttribute("disabled");
+        }
+
         attributeChangedCallback(name, oldValue, newValue) {
             if(name === "value" && this._isValidValue(newValue) && oldValue !== newValue) {
                 this.value = newValue;
                 this._updateCheckbox(this.value);
             }
+ 
+            if (name === "disabled" && oldValue !== newValue) {
+                this.disabled = !!this.hasAttribute("disabled");
+            } 
         }
 
         _isValidValue(newValue) {
@@ -148,6 +183,9 @@
         }
 
         _toggleValue(event) {
+            if (this.disabled) {
+                return;
+            }
             this._checked = this.$_checkbox.checked;
             if (this._checked) {
                 this.value = this._valueRight;
