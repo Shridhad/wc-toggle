@@ -156,6 +156,11 @@
         set value(newValue) {
            this.setAttribute("value", newValue);
            this._updateSelectedClass();
+
+           this.dispatchEvent(new CustomEvent("change", {
+                detail: {value: this.value},
+                bubbles: true    
+            }));
         }
 
         get value() {
@@ -219,10 +224,6 @@
             } else {
                 this.value = this._valueLeft;
             }
-            this.dispatchEvent(new CustomEvent("change", {
-                detail: {value: this.value},
-                bubbles: true    
-            }));
         }
 
         _updateSelectedClass() {
