@@ -110,15 +110,15 @@
             const template = doc.querySelector('#wc-toggle-template');
             this.attachShadow({mode: 'open'});
             this.shadowRoot.appendChild(template.content.cloneNode(true));
-        }
 
-        connectedCallback() {
             this.$_checkbox = this.shadowRoot.querySelector("#wc-toggle-checkbox");
             this.$_labelLeft = this.shadowRoot.querySelector(".label-left");
             this.$_labelRight = this.shadowRoot.querySelector(".label-right");
             this._readValues();
             this._setLabels();
+        }
 
+        connectedCallback() {
             this.$_checkbox.addEventListener("click", this._toggleValue.bind(this));
         }
 
@@ -129,7 +129,7 @@
         _readValues() {
             this._valueLeft = this.getAttribute("value-left");
             this._valueRight = this.getAttribute("value-right");
-            
+
             this.disabled = this.hasAttribute("disabled");
             this.readonly = this.hasAttribute("readonly");
             if (this.hasAttribute("value")) {
