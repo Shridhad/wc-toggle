@@ -94,6 +94,8 @@
     </div>
 </template>
 <script>
+  (() => {
+    const doc = (document._currentScript || document.currentScript).ownerDocument;
     class WCToggle extends HTMLElement {
         static get observedAttributes() {
             return ['value', 'disabled', 'readonly'];
@@ -106,7 +108,6 @@
         }
 
         createTemplate() {
-            const doc = (document._currentScript || document.currentScript).ownerDocument;
             const template = doc.querySelector('#wc-toggle-template');
             this.attachShadow({mode: 'open'});
             this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -238,4 +239,5 @@
     }
 
     customElements.define('wc-toggle', WCToggle);
+  })();
 </script>
